@@ -1,5 +1,6 @@
 #!flask/bin/python
-from flask import Flask, jsonify, make_response
+import subprocess
+from flask import Flask, jsonify, make_response, request, json
 from sklearn.externals import joblib
 
 app = Flask(__name__)
@@ -23,8 +24,10 @@ def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 @app.route('/get_ratings', methods=['POST'])
-def classget_ratings(inputs):
-    rating predict_rating(inputs)
+def get_ratings():
+    input_data = request.get_json()
+    rating = predict_rating(input_data)
+    return jsonify({'rating':rating})
 
 class resources:
     def __init__(inputs):
@@ -33,7 +36,7 @@ class resources:
 def predict_rating(dataArray):
     clf = joblib.load(TRAINING_MODEL_FILEPATH)
     result = clf.predict(dataArray) 
-    return jsonify({'result': result})
+    return result
 
 def generate_tips(inputs):
     pass
