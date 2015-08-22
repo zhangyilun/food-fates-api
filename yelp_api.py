@@ -5,6 +5,7 @@ import sys
 import urllib
 import urllib2
 import oauth2
+import subprocess
 
 def request(host, path, url_params=None):
     url_params = url_params or {}
