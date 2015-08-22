@@ -1,8 +1,8 @@
 #!flask/bin/python
 from flask import Flask, jsonify
+from sklearn.externals import joblib
 
 app = Flask(__name__)
-
 
 tasks = [
     {
@@ -19,14 +19,19 @@ tasks = [
     }
 ]
 
-@app.route('/todo/api/tasks', methods=['GET'])
-def get_tasks():
-    return jsonify({'tasks': tasks})
-
-
 @app.route('/')
 def index():
-    return "hello world!"
+    return "Woot!"
+
+@app.route('/classify', methods=['GET'])
+def classify():
+    return jsonify({'tasks': tasks})
+
+def predict_rating(trained_model, inputs):
+    pass
+
+def generate_tips(inputcluster):
+    pass
 
 if __name__ == '__main__':
     app.run(debug=True)
