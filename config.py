@@ -1,0 +1,1 @@
+TRAINING_MODEL_FILEPATH = 'model.pkl'

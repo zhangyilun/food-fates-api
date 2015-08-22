@@ -1,8 +1,9 @@
 #!flask/bin/python
-from flask import Flask, jsonify
+from flask import Flask, jsonify, make_response
 from sklearn.externals import joblib
 
 app = Flask(__name__)
+app.config.from_object('config')
 
 tasks = [
     {
@@ -17,14 +18,24 @@ tasks = [
 def index():
     return "Woot!"
 
-@app.route('/classify', methods=['GET'])
-def classify():
-    return jsonify({'tasks': tasks})
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
-def predict_rating(trained_model, inputs):
-    pass
+@app.route('/get_ratings', methods=['POST'])
+def classget_ratings(inputs):
+    rating predict_rating(inputs)
 
-def generate_tips(inputcluster):
+class resources:
+    def __init__(inputs):
+        self.inputs = inputs
+
+def predict_rating(dataArray):
+    clf = joblib.load(TRAINING_MODEL_FILEPATH)
+    result = clf.predict(dataArray) 
+    return jsonify({'result': result})
+
+def generate_tips(inputs):
     pass
 
 if __name__ == '__main__':
