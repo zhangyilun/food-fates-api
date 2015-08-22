@@ -6,6 +6,7 @@ import urllib
 import urllib2
 import oauth2
 
+
 def request(host, path, url_params=None):
     url_params = url_params or {}
     url = 'http://{0}{1}?'.format(host, urllib.quote(path.encode('utf8')))

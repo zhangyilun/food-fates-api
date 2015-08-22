@@ -1,4 +1,4 @@
-TRAINING_MODEL_FILEPATH = 'model/rfModel.pkl'
+TRAINING_MODEL_FILEPATH = 'adaModel/adaModel.pkl'
 
 # yelp oauth
 API_HOST = 'api.yelp.com'
