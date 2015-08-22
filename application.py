@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 import reverse_geocoder as rg
-import us
+import us, urllib
 from flask import Flask, Response, jsonify, make_response, request, json
 from sklearn.externals import joblib
 from datetime import datetime
@@ -35,7 +35,13 @@ def get_reviews():
 	r = json.loads(input_data)
 	lat = r['latitude']
 	lon = r['longitude']
-	return 'reviews!'
+	df = pd.read_csv("dataset/review_filtered.csv")
+	dists = calculate_array_of_dist(lon, lat, df)
+	df['dist'] = dists
+	df = df.sort('dist', ascending=1)
+	top20 = df['text'][:20]
+	result = score_sentences(top20, 0.8)
+	return jsonify(result)
 
 
 @app.route('/get_nearby', methods=['POST'])
@@ -49,6 +55,40 @@ def get_nearby():
 #############################################################################
 ############################## helper functions #############################
 #############################################################################
+
+def score_sentences(sents, thresh, is_print=False):
+    output = { 'pos' : [], 'neg' : [] }
+    for sent in sents:
+        f = urllib.urlopen("http://text-processing.com/api/sentiment/",
+                           urllib.urlencode({'text':sent}))
+        result = json.loads(f.read())
+
+        label = result['label']
+        prob = result['probability'][label]
+        if prob > thresh and label != 'neutral':
+            if label == 'pos':
+                s = "\x1b[32m[%2.f%% %s] %s\x1b[0m " % (prob*100, label, sent)
+            else:
+                s = "\x1b[31m[%2.f%% %s] %s\x1b[0m " % (prob*100, label, sent)
+            if is_print:
+                print s
+        if label == 'pos':
+        	output['pos'].append({'label': label,
+                    						'prob': prob, 
+                    						'sentence': sent})
+        else:
+        	output['neg'].append({'label': label,
+                    						'prob': prob, 
+                    						'sentence': sent})
+    return output
+
+
+def calculate_array_of_dist(lon, lat, df, dist=1):
+		df["longitude"] = (df["longitude"] - lon)**2
+		df["latitude"] = (df["latitude"] - lat)**2
+		result = np.sqrt(df["longitude"]+df["latitude"])
+		result *= 69 # miles
+		return result
 
 def predict_rating(dataArray):
 		clf = joblib.load(app.config['TRAINING_MODEL_FILEPATH'])
@@ -126,8 +166,8 @@ def get_food_category_list(input_data):
 				results.append(0)
 		return results
 
-def calculate_closest_places(lon, lat, dist=1):
-		df = pd.read_csv("dataset/dist.csv")
+def calculate_closest_places(lon, lat, dist=1, csv_file="dataset/dist.csv"):
+		df = pd.read_csv(csv_file)
 		df = df[["longitude", "latitude"]]
 		df["longitude"] = (df["longitude"] - lon)**2
 		df["latitude"] = (df["latitude"] - lat)**2
