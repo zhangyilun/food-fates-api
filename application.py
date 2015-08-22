@@ -74,11 +74,11 @@ def score_sentences(sents, thresh, is_print=False):
                 print s
         if label == 'pos':
         	output['pos'].append({'label': label,
-                    						'prob': prob, 
+                    						'prob': round(prob, 2), 
                     						'sentence': sent})
         else:
         	output['neg'].append({'label': label,
-                    						'prob': prob, 
+                    						'prob': round(prob, 2), 
                     						'sentence': sent})
     return output
 
