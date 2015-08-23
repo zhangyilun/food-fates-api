@@ -7,9 +7,12 @@ from flask import Flask, Response, jsonify, make_response, request, json
 from sklearn.externals import joblib
 from datetime import datetime
 from models import *
+from flask.ext.cors import CORS, cross_origin
 
 app = Flask(__name__)
 app.config.from_object('config')
+cors = CORS(app, resources={r"/get_ratings": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 @app.route('/')
@@ -20,7 +23,8 @@ def index():
 def not_found(error):
 		return make_response(jsonify({'error': 'Not found'}), 404)
 
-@app.route('/get_ratings', methods=['POST'])
+@app.route('/get_ratings', methods=[ 'GET' ,'POST'])
+@cross_origin(origin='*')
 def get_ratings():
 		input_data = str(request.data)
 		r = json.loads(input_data)
@@ -29,7 +33,8 @@ def get_ratings():
 		return jsonify({'result' : rating})
 		
 
-@app.route('/get_reviews', methods=['POST'])
+@app.route('/get_reviews', methods=['GET' ,'POST'])
+@cross_origin(origin='*')
 def get_reviews():
 	input_data = str(request.data)
 	r = json.loads(input_data)
@@ -44,7 +49,8 @@ def get_reviews():
 	return jsonify(result)
 
 
-@app.route('/get_nearby', methods=['POST'])
+@app.route('/get_nearby', methods=['GET' ,'POST'])
+@cross_origin(origin='*')
 def get_nearby():
 	input_data = str(request.data)
 	r = json.loads(input_data)
