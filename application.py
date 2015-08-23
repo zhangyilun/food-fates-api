@@ -74,11 +74,11 @@ def score_sentences(sents, thresh, is_print=False):
                 print s
         if label == 'pos':
         	output['pos'].append({'label': label,
-                    						'prob': round(prob, 2), 
+                    						'prob': prob, 
                     						'sentence': sent})
         else:
         	output['neg'].append({'label': label,
-                    						'prob': round(prob, 2), 
+                    						'prob': prob, 
                     						'sentence': sent})
     return output
 
@@ -188,20 +188,20 @@ def gather_data_for_ml(input_data):
 	hours = get_hours(input_data)
 	model_ordered_list.extend([city, state]) # city, state
 	model_ordered_list.extend(hours)
-	model_ordered_list.append(input['accepts_credit_card']) #bool
-	model_ordered_list.append(input['host_large_group']) #bool
-	model_ordered_list.append(input['price_range'])
-	model_ordered_list.append(input['alcohol'])
-	model_ordered_list.append(input['noise_level'])
-	model_ordered_list.append(input['waiter_service']) #bool
-	model_ordered_list.append(input['wifi'])
+	model_ordered_list.append(input_data['accepts_credit_card']) #bool
+	model_ordered_list.append(input_data['host_large_group']) #bool
+	model_ordered_list.append(input_data['price_range'])
+	model_ordered_list.append(input_data['alcohol'])
+	model_ordered_list.append(input_data['noise_level'])
+	model_ordered_list.append(input_data['waiter_service']) #bool
+	model_ordered_list.append(input_data['wifi'])
 	model_ordered_list.append(get_late_night_bool(input_data))
-	model_ordered_list.append(input['has_tv']) #bool
+	model_ordered_list.append(input_data['has_tv']) #bool
 	model_ordered_list.append(get_24_hr_bool(hours)) #bool
-	model_ordered_list.append(input['drive_thru']) #bool
+	model_ordered_list.append(input_data['drive_thru']) #bool
 	model_ordered_list.extend(get_food_category_list(input_data))
 	model_ordered_list.append(calculate_closest_places(input_data['longitude'], input_data['latitude']))
 	return model_ordered_list
 
 if __name__ == '__main__':
-		app.run(debug=True)
+		app.run(host='0.0.0.0')
