@@ -29,7 +29,7 @@ def get_ratings():
 		return jsonify({'result' : rating})
 		
 
-@app.route('/get_reviews', methods=['POST'])
+@app.route('/get_reviews', methods=['GET', 'POST'])
 def get_reviews():
 	input_data = str(request.data)
 	r = json.loads(input_data)
@@ -182,26 +182,30 @@ def generate_tips(inputs):
 
 def gather_data_for_ml(input_data):
 	model_ordered_list = []
-	a = input_data['latitude']
-	b = input_data['longitude']
-	city, state = get_city_and_state(a, b)
-	hours = get_hours(input_data)
-	model_ordered_list.extend([city, state]) # city, state
-	model_ordered_list.extend(hours)
-	model_ordered_list.append(input['accepts_credit_card']) #bool
-	model_ordered_list.append(input['host_large_group']) #bool
-	model_ordered_list.append(input['price_range'])
-	model_ordered_list.append(input['alcohol'])
-	model_ordered_list.append(input['noise_level'])
-	model_ordered_list.append(input['waiter_service']) #bool
-	model_ordered_list.append(input['wifi'])
-	model_ordered_list.append(get_late_night_bool(input_data))
-	model_ordered_list.append(input['has_tv']) #bool
-	model_ordered_list.append(get_24_hr_bool(hours)) #bool
-	model_ordered_list.append(input['drive_thru']) #bool
-	model_ordered_list.extend(get_food_category_list(input_data))
-	model_ordered_list.append(calculate_closest_places(input_data['longitude'], input_data['latitude']))
-	return model_ordered_list
+	try:
+		a = float(input_data['latitude'])
+		b = float(input_data['longitude'])
+		city, state = get_city_and_state(a, b)
+		hours = get_hours(input_data)
+		model_ordered_list.extend([city, state]) # city, state
+		model_ordered_list.extend(hours)]
+		model_ordered_list.append(bool(input['accepts_credit_card'])) #bool
+		model_ordered_list.append(bool(input['host_large_group'])) #bool
+		model_ordered_list.append(input['price_range'])
+		model_ordered_list.append(input['alcohol'])
+		model_ordered_list.append(input['noise_level'])
+		model_ordered_list.append(bool(input['waiter_service'])) #bool
+		model_ordered_list.append(input['wifi'])
+		model_ordered_list.append(get_late_night_bool(input_data))
+		model_ordered_list.append(bool(input['has_tv'])) #bool
+		model_ordered_list.append(bool(get_24_hr_bool(hours))) #bool
+		model_ordered_list.append(bool(input['drive_thru'])) #bool
+		model_ordered_list.extend(get_food_category_list(input_data))
+		model_ordered_list.append(calculate_closest_places(input_data['longitude'], input_data['latitude']))
+	except:
+		pass
+	finally:
+		return model_ordered_list
 
 if __name__ == '__main__':
-		app.run(debug=True)
+		app.run(host='0.0.0.0')
