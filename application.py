@@ -29,7 +29,7 @@ def get_ratings():
 		return jsonify({'result' : rating})
 		
 
-@app.route('/get_reviews', methods=['POST'])
+@app.route('/get_reviews', methods=['GET', 'POST'])
 def get_reviews():
 	input_data = str(request.data)
 	r = json.loads(input_data)
@@ -175,10 +175,6 @@ def calculate_closest_places(lon, lat, dist=1, csv_file="dataset/dist.csv"):
 		result *= 69 # miles
 		less_than_one_mile = result[result < dist]
 		return len(less_than_one_mile)
-
-def generate_tips(inputs):
-		pass
-
 
 def gather_data_for_ml(input_data):
 	model_ordered_list = []
