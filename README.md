@@ -1,3 +1,9 @@
-# RestfulFlaskyStuff
+##Food Fate 
 
-6Sense Hackathon
+An app created by Leland Lee (lelandlee), Yilun Zhang (zhangyilun), and myself for DataHack.
+Using ML to predict the rating of your next restaurant proposal and provides you with tips.
+
+Data: Yelp Dataset
+Machine learning: Scikit-Learn
+Frontend: js (React), MapBox
+Backend:  python (Flask) 
